@@ -14,15 +14,16 @@ namespace DelphiSupervisorV6
             List<ProcessInfo> list = new List<ProcessInfo>();
             foreach(Process process in Process.GetProcesses())
             {
-                list.Add(new ProcessInfo(process));
+                list.Add(new ProcessInfo(process.ProcessName,process.Id, process.PagedMemorySize64));
             }
             return list;
         }
 
         public ProcessInfo GetByID(int processId)
         {
-            ProcessInfo process = new ProcessInfo(Process.GetProcessById(processId));
-            return process;
+            var process = Process.GetProcessById(processId);
+            ProcessInfo processInfo = new ProcessInfo(process.ProcessName, process.Id, process.PagedMemorySize64);
+            return processInfo;
         }
 
         public List<ProcessInfo> GetProcessByName(string processesName)
@@ -30,7 +31,7 @@ namespace DelphiSupervisorV6
             List<ProcessInfo> list = new List<ProcessInfo>();
             foreach(Process process in Process.GetProcessesByName(processesName))
             {
-                list.Add(new ProcessInfo(process));
+                list.Add(new ProcessInfo(process.ProcessName, process.Id, process.PagedMemorySize64));
             }
             return list;
         }
@@ -38,7 +39,7 @@ namespace DelphiSupervisorV6
         public ProcessInfo KillProcces(int processesId)
         {
             var processById = Process.GetProcessById(processesId);
-            ProcessInfo process = new ProcessInfo(processById);
+            ProcessInfo process = new ProcessInfo(processById.ProcessName, processById.Id, processById.PagedMemorySize64);
             processById.Kill();
             return process;
         }
@@ -46,7 +47,7 @@ namespace DelphiSupervisorV6
         public ProcessInfo StartProcces(string path)
         {
             var process = Process.Start(path);
-            ProcessInfo processInfo = new ProcessInfo(process);
+            ProcessInfo processInfo = new ProcessInfo(process.ProcessName, process.Id, process.PagedMemorySize64);
             return processInfo;
         }
     }
