@@ -13,11 +13,11 @@ namespace DelphiSupervisorV6
         public int PID { get; set; }
         public long Memory { get; set; }
 
-        public ProcessInfo(Process process)
+        public ProcessInfo(string name, int pid, long memory)
         {
-            Name = process.ProcessName;
-            PID = process.Id;
-            Memory = process.PagedMemorySize64;
+            Name = name;
+            PID = pid;
+            Memory = memory;
         }
     }
 }

@@ -12,10 +12,10 @@ namespace DelphiSupervisorV6
         private IView view;
         private IProcessProvider processProvider;
 
-        public Commands()
+        public Commands(IView view, IProcessProvider processProvider)
         {
-            view = new ConsoleView();
-            processProvider = new ProcessProvider();
+            this.view = view;
+            this.processProvider = processProvider;
         }
         [Command("ShowAll","Method that shows all running processes on the system")]
         public void ShowAll ()
