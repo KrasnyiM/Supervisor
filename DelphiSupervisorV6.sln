@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DelphiSupervisorV6", "DelphiSupervisorV6\DelphiSupervisorV6.csproj", "{26E6CEE4-BF7D-4115-BECB-A37B5A940B4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCommands", "TestCommands\TestCommands.csproj", "{D46DD4D1-C92B-40E5-8AD0-9D59F7843E51}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{26E6CEE4-BF7D-4115-BECB-A37B5A940B4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26E6CEE4-BF7D-4115-BECB-A37B5A940B4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26E6CEE4-BF7D-4115-BECB-A37B5A940B4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26E6CEE4-BF7D-4115-BECB-A37B5A940B4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D46DD4D1-C92B-40E5-8AD0-9D59F7843E51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D46DD4D1-C92B-40E5-8AD0-9D59F7843E51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D46DD4D1-C92B-40E5-8AD0-9D59F7843E51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D46DD4D1-C92B-40E5-8AD0-9D59F7843E51}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F2F7335A-770E-4960-A242-898D5911248B}
+	EndGlobalSection
+EndGlobal
