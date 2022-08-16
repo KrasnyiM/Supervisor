@@ -12,5 +12,7 @@ namespace DelphiSupervisorV6
         public void ShowAll(IEnumerable<ProcessInfo> processes);
 
         public void ShowOne(ProcessInfo process);
+        public void ShowMonitoredServiceStarted(ConfiguredService service);
+        public void ShowMonitoredServiceStopped(ConfiguredService service);
     }
 }

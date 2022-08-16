@@ -46,5 +46,23 @@ namespace DelphiSupervisorV6
         {
             view.ShowAll(processProvider.GetProcessByName(processName));          
         }
+
+        [Command("Watch")]
+        public void Watch()
+        {
+            processProvider.ConfiguredServiceStarted += Provider_ConfiguredServiceStarted;
+            processProvider.ConfiguredServiceStopped += Provider_ConfiguredServiceStopped;
+            processProvider.StartMonitorConfiguredServices();
+        }
+
+        private void Provider_ConfiguredServiceStopped(ConfiguredService service)
+        {
+            view.ShowMonitoredServiceStopped(service);
+        }
+
+        private void Provider_ConfiguredServiceStarted(ConfiguredService service)
+        {
+            view.ShowMonitoredServiceStarted(service);
+        }
     }
 }

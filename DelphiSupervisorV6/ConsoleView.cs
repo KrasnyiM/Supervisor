@@ -17,6 +17,16 @@ namespace DelphiSupervisorV6
             }
         }
 
+        public void ShowMonitoredServiceStarted(ConfiguredService service)
+        {
+            Console.WriteLine($"{DateTime.UtcNow}: Service {service.ServiceName} is started");
+        }
+
+        public void ShowMonitoredServiceStopped(ConfiguredService service)
+        {
+            Console.WriteLine($"{DateTime.UtcNow}: Service {service.ServiceName} is stopped");
+        }
+
         public void ShowOne(ProcessInfo process)
         {
             Console.WriteLine($"ID: {process.PID}  Name: {process.Name} MemoryUsage: {process.Memory}");

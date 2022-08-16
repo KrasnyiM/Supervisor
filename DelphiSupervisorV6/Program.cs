@@ -12,11 +12,14 @@ namespace DelphiSupervisorV6
     {
         static void Main(string[] args)
         {
+            var fileWatcher = new FileWatcher();
+            fileWatcher.Watch();
             var builder = ConsoleApp.CreateBuilder(args);
             builder.ConfigureServices((ctx, services) =>
             {
                 services.AddSingleton<IView, ConsoleView>();
                 services.AddSingleton<IProcessProvider, ProcessProvider>();
+                services.AddSingleton<IServicesTable>(provider => new ConfiguredServicesTable(fileWatcher));
             });
             
 
