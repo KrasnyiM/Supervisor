@@ -8,7 +8,10 @@ namespace DelphiSupervisorV6
 {
     public interface IServicesTable
     {
+        /// <summary>
+        /// Method for get configured services.
+        /// </summary>
+        /// <returns></returns>
         public List<ConfiguredService> GetServices();
-
     }
 }

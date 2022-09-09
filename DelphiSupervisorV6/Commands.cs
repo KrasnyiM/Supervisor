@@ -17,8 +17,9 @@ namespace DelphiSupervisorV6
             this.view = view;
             this.processProvider = processProvider;
         }
+
         [Command("ShowAll","Method that shows all running processes on the system")]
-        public void ShowAll ()
+        public void ShowAll()
         {
             view.ShowAll(processProvider.GetAllProcesses());
         }

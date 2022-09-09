@@ -93,5 +93,20 @@ namespace TestCommands
             //Assert
             view.Received().ShowOne(processInfo);
         }
+
+        [Fact]
+        public void AddedConfig_ReturnMessage()
+        {
+            //Arrange
+            var processProvider = Substitute.For<IProcessProvider>();
+            var view = Substitute.For<IView>();
+            var processInfo = new ConfiguredService();
+            var sut = new Commands(view, processProvider);
+
+            //Act
+
+            //Assert
+
+        }
     }
 }

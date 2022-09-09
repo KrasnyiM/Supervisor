@@ -87,6 +87,7 @@ namespace DelphiSupervisorV6
             ProcessInfo processInfo = new ProcessInfo(process.ProcessName, process.Id, process.PagedMemorySize64);
             return processInfo;
         }
+
         public void StartMonitorConfiguredServices()
         {
             _monitorTask = new Task(StartTimer);
@@ -115,8 +116,7 @@ namespace DelphiSupervisorV6
                     service.IsStarted = false;
                     ConfiguredServiceStopped?.Invoke(service);
                 }
-            }   
-            
+            }               
         }
     }
 }

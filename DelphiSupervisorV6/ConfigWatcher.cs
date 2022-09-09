@@ -7,7 +7,7 @@ using System.Xml.Serialization;
 
 namespace DelphiSupervisorV6
 {
-    public class FileWatcher
+    public class ConfigWatcher : IConfigWatcher
     {
         private FileSystemWatcher watcher;
 
@@ -17,7 +17,7 @@ namespace DelphiSupervisorV6
         public event ServicesHandler ServiceAdded;
         public event ServicesHandler ServiceRemoved;
 
-        public FileWatcher()
+        public ConfigWatcher()
         {
             watcher = new FileSystemWatcher()
             {
@@ -35,8 +35,8 @@ namespace DelphiSupervisorV6
         }
 
         private void OnCreated(object source, FileSystemEventArgs e)
-        {
-            using (FileStream fs = new FileStream(e.FullPath,FileMode.Open))
+        {            
+            using (FileStream fs = new FileStream(e.FullPath, FileMode.Open))
             {
                 ConfiguredService service = (ConfiguredService)xmlSerializer.Deserialize(fs);
                 ServiceAdded?.Invoke(service);

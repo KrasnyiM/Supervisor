@@ -27,6 +27,11 @@ namespace DelphiSupervisorV6
             Console.WriteLine($"{DateTime.UtcNow}: Service {service.ServiceName} is stopped");
         }
 
+        public void ShowNewConfig(ConfiguredService config)
+        {
+            Console.WriteLine($"Service {config.ServiceName} was configured for tracking");
+        }
+
         public void ShowOne(ProcessInfo process)
         {
             Console.WriteLine($"ID: {process.PID}  Name: {process.Name} MemoryUsage: {process.Memory}");

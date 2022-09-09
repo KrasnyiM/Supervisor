@@ -10,12 +10,15 @@ namespace DelphiSupervisorV6
     {
         private List<ConfiguredService> configuredServices = new List<ConfiguredService>();
 
-        private FileWatcher watcher;
-        public ConfiguredServicesTable(FileWatcher fileWatcher)
+        private ConfigWatcher watcher;
+        private IView view;
+
+        public ConfiguredServicesTable(ConfigWatcher fileWatcher, IView view)
         {
             watcher = fileWatcher;
             watcher.ServiceAdded += AddService;
             watcher.ServiceRemoved += Delete;
+            this.view = view;
         }
 
         public List<ConfiguredService> GetServices()
@@ -26,6 +29,7 @@ namespace DelphiSupervisorV6
         private void AddService(ConfiguredService configuredService)
         {
             configuredServices.Add(configuredService);
+            view.ShowNewConfig(configuredService);
         }
 
         private void Delete(ConfiguredService configuredService)
