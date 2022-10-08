@@ -11,7 +11,7 @@ namespace DelphiSupervisorV6
         /// <summary>
         /// Method for get configured services.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Collection</returns>
         public List<ConfiguredService> GetServices();
     }
 }

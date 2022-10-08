@@ -97,16 +97,35 @@ namespace TestCommands
         [Fact]
         public void AddedConfig_ReturnMessage()
         {
-            //Arrange
-            var processProvider = Substitute.For<IProcessProvider>();
+            //Arrange           
             var view = Substitute.For<IView>();
-            var processInfo = new ConfiguredService();
-            var sut = new Commands(view, processProvider);
+            var configWatcher = Substitute.For<IConfigWatcher>();
+            var configuredService= new ConfiguredService() { ServiceName = "Myroslav", ApplicationPath = "123"};
+            var sut = new ConfiguredServicesTable(configWatcher, view);
 
             //Act
+            configWatcher.ServiceAdded += Raise.Event<ServicesHandler>(configuredService);
 
             //Assert
+            view.Received().ShowNewConfig(configuredService);
+        }
 
+        [Fact]
+        public void AddConfig_AddObjectToCollection()
+        {
+            ///Arrange 
+            var view = Substitute.For<IView>();
+            var configWatcher = Substitute.For<IConfigWatcher>();
+            var expected = new ConfiguredService() { ServiceName = "Myroslav", ApplicationPath = "123" };
+            var sut = new ConfiguredServicesTable(configWatcher, view);
+
+            //Act
+            configWatcher.ServiceAdded += Raise.Event<ServicesHandler>(expected);
+            var result = sut.GetServices();
+            var actual = result[0];
+
+            //Assert
+            Assert.Equal(expected, actual);
         }
     }
 }

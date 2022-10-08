@@ -7,9 +7,8 @@ using System.Xml.Serialization;
 
 namespace DelphiSupervisorV6
 {
-    public class ConfiguredService
+    public class ConfiguredService 
     {
-        
         public string ServiceName { get; set; }
         
         public string ApplicationPath { get; set; }

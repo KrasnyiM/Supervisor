@@ -12,8 +12,7 @@ namespace DelphiSupervisorV6
         private FileSystemWatcher watcher;
 
         private XmlSerializer xmlSerializer;
-
-        public delegate void ServicesHandler(ConfiguredService service);
+        
         public event ServicesHandler ServiceAdded;
         public event ServicesHandler ServiceRemoved;
 
@@ -34,7 +33,7 @@ namespace DelphiSupervisorV6
             watcher.Deleted += new FileSystemEventHandler(OnDeleted);
         }
 
-        private void OnCreated(object source, FileSystemEventArgs e)
+        public void OnCreated(object source, FileSystemEventArgs e)
         {            
             using (FileStream fs = new FileStream(e.FullPath, FileMode.Open))
             {
@@ -43,7 +42,7 @@ namespace DelphiSupervisorV6
             }
         }
 
-        private void OnDeleted(object source, FileSystemEventArgs e)
+        public void OnDeleted(object source, FileSystemEventArgs e)
         {
             using (FileStream fs = new FileStream(e.FullPath, FileMode.Open))
             {
