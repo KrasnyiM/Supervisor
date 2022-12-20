@@ -34,5 +34,10 @@ namespace DelphiSupervisorV6
         /// </summary>
         /// <param name="config">Added config</param>
         public void ShowNewConfig(ConfiguredService config);
+        /// <summary>
+        /// Method for showing message that config delete.
+        /// </summary>
+        /// <param name="fileName"></param>
+        public void ShowDeleteConfig(string fileName);
     }
 }

@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace DelphiSupervisorV6
 {
-    public delegate void ServicesHandler(ConfiguredService service);
+    public delegate void AddService(ConfiguredService service);
+    public delegate void RemoveService(string fileName);
     public interface IConfigWatcher
     {
-        public event ServicesHandler ServiceAdded;
-        public event ServicesHandler ServiceRemoved;
+        public event AddService ServiceAdded;
+        public event RemoveService ServiceRemoved;
 
         public void Watch();
 

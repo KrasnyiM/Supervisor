@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -35,6 +36,11 @@ namespace DelphiSupervisorV6
         public void ShowOne(ProcessInfo process)
         {
             Console.WriteLine($"ID: {process.PID}  Name: {process.Name} MemoryUsage: {process.Memory}");
+        }
+
+        public void ShowDeleteConfig(string fileName)
+        {
+            Console.WriteLine($"{DateTime.UtcNow}: Config {fileName} was deleted");
         }
     }
 }

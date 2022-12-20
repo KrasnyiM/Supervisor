@@ -12,6 +12,7 @@ namespace DelphiSupervisorV6
         public string ServiceName { get; set; }
         
         public string ApplicationPath { get; set; }
+        public string FileName { get; set; }
 
         [XmlIgnore]
         public bool IsStarted { get; set; }

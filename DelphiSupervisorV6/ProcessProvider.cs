@@ -101,7 +101,7 @@ namespace DelphiSupervisorV6
         }
 
         private void MonitoreConfigureServices(object obj)
-        {            
+        {
             var runningProcesses = Process.GetProcesses();
             foreach (var service in _servicesTable.GetServices())
             {
@@ -115,7 +115,8 @@ namespace DelphiSupervisorV6
                     service.IsStarted = false;
                     ConfiguredServiceStopped?.Invoke(service);
                 }
-            }               
+            }
         }
+
     }
 }

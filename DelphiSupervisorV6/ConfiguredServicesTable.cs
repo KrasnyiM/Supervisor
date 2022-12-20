@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace DelphiSupervisorV6
 {
@@ -32,10 +34,14 @@ namespace DelphiSupervisorV6
             view.ShowNewConfig(configuredService);
         }
 
-        private void Delete(ConfiguredService configuredService)
+        private void Delete(string fileName)
         {
-            var serviceToDelete = configuredServices.Where(s => s.ServiceName == configuredService.ServiceName).FirstOrDefault();
+            var serviceToDelete = configuredServices.Where(s => s.ServiceName == fileName)
+                .FirstOrDefault();
+
             configuredServices.Remove(serviceToDelete);
+
+            view.ShowDeleteConfig(fileName);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace DelphiSupervisorV6
@@ -12,43 +13,54 @@ namespace DelphiSupervisorV6
         private FileSystemWatcher watcher;
 
         private XmlSerializer xmlSerializer;
-        
-        public event ServicesHandler ServiceAdded;
-        public event ServicesHandler ServiceRemoved;
+
+        public event AddService ServiceAdded;
+        public event RemoveService ServiceRemoved;
 
         public ConfigWatcher()
         {
             watcher = new FileSystemWatcher()
             {
-                Path = "D:\\DelphiSupervisorV6\\Services",
+                Path = "D:\\Service",
                 Filter = "*.xml",
                 EnableRaisingEvents = true,
             };
             xmlSerializer = new XmlSerializer(typeof(ConfiguredService));
         }
-                
+
         public void Watch()
         {
+            Init();
             watcher.Created += new FileSystemEventHandler(OnCreated);
             watcher.Deleted += new FileSystemEventHandler(OnDeleted);
         }
 
-        public void OnCreated(object source, FileSystemEventArgs e)
-        {            
-            using (FileStream fs = new FileStream(e.FullPath, FileMode.Open))
+        private void Init()
+        {
+            var files = Directory.GetFiles("D:\\Service", "*.xml");
+            foreach (var file in files)
             {
-                ConfiguredService service = (ConfiguredService)xmlSerializer.Deserialize(fs);
+                using (var reader = XmlReader.Create(file))
+                {
+                    ConfiguredService service = (ConfiguredService)xmlSerializer.Deserialize(reader);
+                    ServiceAdded?.Invoke(service);
+                }
+            }
+        }
+
+        public void OnCreated(object source, FileSystemEventArgs e)
+        {
+            using (XmlReader reader = XmlReader.Create(e.FullPath))
+            {
+                ConfiguredService service = (ConfiguredService)xmlSerializer.Deserialize(reader);
+                service.FileName = e.Name;
                 ServiceAdded?.Invoke(service);
             }
         }
 
         public void OnDeleted(object source, FileSystemEventArgs e)
         {
-            using (FileStream fs = new FileStream(e.FullPath, FileMode.Open))
-            {
-                ConfiguredService service = (ConfiguredService)xmlSerializer.Deserialize(fs);
-                ServiceRemoved?.Invoke(service);
-            }
+            ServiceRemoved?.Invoke(e.Name);
         }
     }
 }
