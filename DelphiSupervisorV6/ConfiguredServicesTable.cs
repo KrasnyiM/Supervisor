@@ -20,12 +20,18 @@ namespace DelphiSupervisorV6
             watcher = fileWatcher;
             watcher.ServiceAdded += AddService;
             watcher.ServiceRemoved += Delete;
+            watcher.ConfigureServiceAdded += AddConfigureService;
             this.view = view;
         }
 
         public List<ConfiguredService> GetServices()
         {
             return configuredServices;
+        }
+
+        private void AddConfigureService(ConfiguredService configureService)
+        {
+            configuredServices.Add(configureService);
         }
 
         private void AddService(ConfiguredService configuredService)
@@ -38,9 +44,7 @@ namespace DelphiSupervisorV6
         {
             var serviceToDelete = configuredServices.Where(s => s.ServiceName == fileName)
                 .FirstOrDefault();
-
             configuredServices.Remove(serviceToDelete);
-
             view.ShowDeleteConfig(fileName);
         }
     }

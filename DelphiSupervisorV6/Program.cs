@@ -11,9 +11,7 @@ namespace DelphiSupervisorV6
     internal class Program
     {
         static void Main(string[] args)
-        {
-            
-            //fileWatcher.Watch();
+        {           
             var builder = ConsoleApp.CreateBuilder(args);
             builder.ConfigureServices((ctx, services) =>
             {

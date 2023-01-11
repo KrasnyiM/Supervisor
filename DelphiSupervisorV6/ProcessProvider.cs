@@ -5,53 +5,29 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Threading;
+using System.Timers;
 
 namespace DelphiSupervisorV6
 {
     public class ProcessProvider : IProcessProvider
     {
         private IServicesTable _servicesTable;
+        private static System.Timers.Timer _timer;
 
         public event ConfiguredServiceHandle ConfiguredServiceStarted;
         public event ConfiguredServiceHandle ConfiguredServiceStopped;
-        private Task _monitorTask;
+
         public ProcessProvider(IServicesTable servicesTable)
         {
             _servicesTable = servicesTable;
-        }
-
-        event ConfiguredServiceHandle IProcessProvider.ConfiguredServiceStarted
-        {
-            add
-            {
-                ConfiguredServiceStarted += value;
-            }
-
-            remove
-            {
-                ConfiguredServiceStarted -= value;
-            }
-        }
-
-        event ConfiguredServiceHandle IProcessProvider.ConfiguredServiceStopped
-        {
-            add
-            {
-                ConfiguredServiceStopped += value;
-            }
-
-            remove
-            {
-                ConfiguredServiceStopped -= value;
-            }
-        }
+        }       
 
         public List<ProcessInfo> GetAllProcesses()
         {
             List<ProcessInfo> list = new List<ProcessInfo>();
             foreach(Process process in Process.GetProcesses())
             {
-                list.Add(new ProcessInfo(process.ProcessName,process.Id, process.PagedMemorySize64));
+                list.Add(new ProcessInfo(process.ProcessName, process.Id, process.PagedMemorySize64));
             }
             return list;
         }
@@ -88,19 +64,31 @@ namespace DelphiSupervisorV6
             return processInfo;
         }
 
-        public void StartMonitorConfiguredServices()
+        public void StartTimer()
         {
-            _monitorTask = new Task(StartTimer);
-            _monitorTask.Start();
+            _timer = new System.Timers.Timer(250);
+            _timer.Elapsed += MonitoreConfigureServices;
+            _timer.AutoReset = true;
+            _timer.Enabled = true;
         }
 
-        private void StartTimer()
+        public List<ProcessInfo> GetAllConfigureServices()
         {
-            TimerCallback tm = new TimerCallback(MonitoreConfigureServices);
-            Timer timer = new Timer(tm,null,0,2000);
+            List<ProcessInfo> list = new List<ProcessInfo>();
+            var runningProcesses = Process.GetProcesses();
+            var cfgProcess = _servicesTable.GetServices();
+
+            foreach(var service in runningProcesses)
+            {
+                if(cfgProcess.Select(p => p.ServiceName).Contains(service.ProcessName.Split('.')[0]))
+                {                    
+                    list.Add(new ProcessInfo(service.ProcessName,service.Id, service.PagedMemorySize64));                    
+                }
+            }
+            return list;
         }
 
-        private void MonitoreConfigureServices(object obj)
+        private void MonitoreConfigureServices(object obj, ElapsedEventArgs e)
         {
             var runningProcesses = Process.GetProcesses();
             foreach (var service in _servicesTable.GetServices())
@@ -117,6 +105,5 @@ namespace DelphiSupervisorV6
                 }
             }
         }
-
     }
 }

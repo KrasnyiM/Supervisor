@@ -9,8 +9,7 @@ namespace DelphiSupervisorV6
 {
     public class ConfiguredService 
     {
-        public string ServiceName { get; set; }
-        
+        public string ServiceName { get; set; }       
         public string ApplicationPath { get; set; }
         public string FileName { get; set; }
 

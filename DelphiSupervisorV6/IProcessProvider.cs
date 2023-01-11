@@ -49,7 +49,13 @@ namespace DelphiSupervisorV6
         /// <summary>
         /// Method which monitor configured processes.
         /// </summary>
-        public void StartMonitorConfiguredServices();
+        //public void StartMonitorConfiguredServices();
+        public void StartTimer();
+        /// <summary>
+        /// Method which return running configured services.
+        /// </summary>
+        /// <returns></returns>
+        public List<ProcessInfo> GetAllConfigureServices();
 
     }
 }
