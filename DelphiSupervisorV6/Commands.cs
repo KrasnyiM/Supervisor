@@ -11,14 +11,24 @@ namespace DelphiSupervisorV6
     {
         private IView view;
         private IProcessProvider processProvider;
+        private IConfigWatcher configWatcher;
 
-        public Commands(IView view, IProcessProvider processProvider)
+        public Commands(IView view, IProcessProvider processProvider, IConfigWatcher configWatcher)
         {
             this.view = view;
             this.processProvider = processProvider;
+            this.configWatcher = configWatcher;
         }
+
+        [Command("GetAll","Method that shows all running configured services")]
+        public void GetAll()
+        {
+            configWatcher.AddConfigureServices();
+            view.ShowAll(processProvider.GetAllConfigureServices());
+        }
+
         [Command("ShowAll","Method that shows all running processes on the system")]
-        public void ShowAll ()
+        public void ShowAll()
         {
             view.ShowAll(processProvider.GetAllProcesses());
         }
@@ -45,6 +55,25 @@ namespace DelphiSupervisorV6
         public void ProcessByName([Option(0)] string processName)
         {
             view.ShowAll(processProvider.GetProcessByName(processName));          
+        }
+
+        [Command("Watch", "Method that monitors configured services")]
+        public void Watch()
+        {
+            configWatcher.Init();
+            processProvider.ConfiguredServiceStarted += Provider_ConfiguredServiceStarted;
+            processProvider.ConfiguredServiceStopped += Provider_ConfiguredServiceStopped;
+            processProvider.StartTimer();
+        }
+
+        private void Provider_ConfiguredServiceStopped(ConfiguredService service)
+        {
+            view.ShowMonitoredServiceStopped(service);
+        }
+
+        private void Provider_ConfiguredServiceStarted(ConfiguredService service)
+        {
+            view.ShowMonitoredServiceStarted(service);
         }
     }
 }

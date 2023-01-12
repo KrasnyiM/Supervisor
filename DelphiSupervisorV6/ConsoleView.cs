@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -17,9 +18,29 @@ namespace DelphiSupervisorV6
             }
         }
 
+        public void ShowMonitoredServiceStarted(ConfiguredService service)
+        {
+            Console.WriteLine($"{DateTime.UtcNow}: Service {service.ServiceName} is started");
+        }
+
+        public void ShowMonitoredServiceStopped(ConfiguredService service)
+        {
+            Console.WriteLine($"{DateTime.UtcNow}: Service {service.ServiceName} is stopped");
+        }
+
+        public void ShowNewConfig(ConfiguredService config)
+        {
+            Console.WriteLine($"Service {config.ServiceName} was configured for tracking");
+        }
+
         public void ShowOne(ProcessInfo process)
         {
             Console.WriteLine($"ID: {process.PID}  Name: {process.Name} MemoryUsage: {process.Memory}");
+        }
+
+        public void ShowDeleteConfig(string fileName)
+        {
+            Console.WriteLine($"{DateTime.UtcNow}: Config {fileName} was deleted");
         }
     }
 }
