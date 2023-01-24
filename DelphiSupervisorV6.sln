@@ -5,7 +5,11 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DelphiSupervisorV6", "DelphiSupervisorV6\DelphiSupervisorV6.csproj", "{26E6CEE4-BF7D-4115-BECB-A37B5A940B4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCommands", "TestCommands\TestCommands.csproj", "{D46DD4D1-C92B-40E5-8AD0-9D59F7843E51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestCommands", "TestCommands\TestCommands.csproj", "{D46DD4D1-C92B-40E5-8AD0-9D59F7843E51}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DelphiWeb", "DelphiWeb\DelphiWeb.csproj", "{0F950298-D364-465E-982B-FDC2487C3370}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SupervisorLogic", "SupervisorLogic\SupervisorLogic.csproj", "{3398BD62-77E8-4C4A-952E-BDC8BDCFE8BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{D46DD4D1-C92B-40E5-8AD0-9D59F7843E51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D46DD4D1-C92B-40E5-8AD0-9D59F7843E51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D46DD4D1-C92B-40E5-8AD0-9D59F7843E51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F950298-D364-465E-982B-FDC2487C3370}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F950298-D364-465E-982B-FDC2487C3370}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F950298-D364-465E-982B-FDC2487C3370}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F950298-D364-465E-982B-FDC2487C3370}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3398BD62-77E8-4C4A-952E-BDC8BDCFE8BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3398BD62-77E8-4C4A-952E-BDC8BDCFE8BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3398BD62-77E8-4C4A-952E-BDC8BDCFE8BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3398BD62-77E8-4C4A-952E-BDC8BDCFE8BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

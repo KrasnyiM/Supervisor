@@ -17,7 +17,7 @@ namespace DelphiSupervisorV6
             {
                 services.AddSingleton<IConfigWatcher, ConfigWatcher>();
                 services.AddSingleton<IView, ConsoleView>();
-                services.AddSingleton<IProcessProvider, ProcessProvider>();
+                services.AddSingleton<IProcessProvider, SdkProcessProvider>();
                 services.AddSingleton<IServicesTable, ConfiguredServicesTable>();
             });           
 

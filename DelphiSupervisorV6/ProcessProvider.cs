@@ -3,107 +3,91 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Threading;
-using System.Timers;
+using System.Xml.Linq;
 
 namespace DelphiSupervisorV6
 {
     public class ProcessProvider : IProcessProvider
     {
-        private IServicesTable _servicesTable;
-        private static System.Timers.Timer _timer;
+        private HttpClient client;
 
         public event ConfiguredServiceHandle ConfiguredServiceStarted;
         public event ConfiguredServiceHandle ConfiguredServiceStopped;
 
-        public ProcessProvider(IServicesTable servicesTable)
+        public ProcessProvider()
         {
-            _servicesTable = servicesTable;
-        }       
-
-        public List<ProcessInfo> GetAllProcesses()
-        {
-            List<ProcessInfo> list = new List<ProcessInfo>();
-            foreach(Process process in Process.GetProcesses())
-            {
-                list.Add(new ProcessInfo(process.ProcessName, process.Id, process.PagedMemorySize64));
-            }
-            return list;
+            client = new HttpClient();
         }
 
-        public ProcessInfo GetByID(int processId)
+        public List<ProcessInfo> GetAllConfigureServices()
         {
-            var process = Process.GetProcessById(processId);
-            ProcessInfo processInfo = new ProcessInfo(process.ProcessName, process.Id, process.PagedMemorySize64);
+            List<ProcessInfo> processInfo = null;
+            HttpResponseMessage httpResponseMessage = client.GetAsync(@"https://localhost:7131/api/processes/processConfigured").Result;
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                return processInfo = httpResponseMessage.Content.ReadAsAsync<List<ProcessInfo>>().Result;
+            }
             return processInfo;
         }
 
-        public List<ProcessInfo> GetProcessByName(string processesName)
+        public List<ProcessInfo> GetAllProcesses()
         {
-            List<ProcessInfo> list = new List<ProcessInfo>();
-            foreach(Process process in Process.GetProcessesByName(processesName))
+            List<ProcessInfo> processInfo = null;
+            HttpResponseMessage httpResponseMessage = client.GetAsync(@"https://localhost:7131/api/processes").Result;
+            if (httpResponseMessage.IsSuccessStatusCode)
             {
-                list.Add(new ProcessInfo(process.ProcessName, process.Id, process.PagedMemorySize64));
+                return processInfo = httpResponseMessage.Content.ReadAsAsync<List<ProcessInfo>>().Result;
             }
-            return list;
+            return processInfo;
         }
 
-        public ProcessInfo KillProcces(int processesId)
+        public ProcessInfo GetByID(int pid)
         {
-            var processById = Process.GetProcessById(processesId);
-            ProcessInfo process = new ProcessInfo(processById.ProcessName, processById.Id, processById.PagedMemorySize64);
-            processById.Kill();
-            return process;
+            ProcessInfo processInfo = null;
+            HttpResponseMessage httpResponseMessage = client.GetAsync($"https://localhost:7131/api/processes/processId?id={pid}").Result;
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                return processInfo = httpResponseMessage.Content.ReadAsAsync<ProcessInfo>().Result;
+            }
+            return processInfo;
+        }
+
+        public List<ProcessInfo> GetProcessByName(string name)
+        {
+            List<ProcessInfo> processInfo = null;
+            HttpResponseMessage httpResponseMessage = client.GetAsync($"https://localhost:7131/api/processes/processName?Name={name}").Result;
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                return processInfo = httpResponseMessage.Content.ReadAsAsync<List<ProcessInfo>>().Result;
+            }
+            return processInfo;
         }
 
         public ProcessInfo StartProcces(string path)
         {
-            var process = Process.Start(path);
-            ProcessInfo processInfo = new ProcessInfo(process.ProcessName, process.Id, process.PagedMemorySize64);
+            ProcessInfo processInfo = null;
+            HttpResponseMessage httpResponseMessage = client.PostAsJsonAsync($"https://localhost:7131/api/processes/command/executeCommand?Path={path}&CommandType=0",path).Result;
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                return processInfo = httpResponseMessage.Content.ReadAsAsync<ProcessInfo>().Result;
+            }
+            return processInfo;
+        }
+
+        public ProcessInfo KillProcces(int id)
+        {
+            ProcessInfo processInfo = null;
+            HttpResponseMessage httpResponseMessage = client.PostAsJsonAsync($"https://localhost:7131/api/processes/command/executeCommand?ProcessId={id}&CommandType=1", id).Result;
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                return processInfo = httpResponseMessage.Content.ReadAsAsync<ProcessInfo>().Result;
+            }
             return processInfo;
         }
 
         public void StartTimer()
         {
-            _timer = new System.Timers.Timer(250);
-            _timer.Elapsed += MonitoreConfigureServices;
-            _timer.AutoReset = true;
-            _timer.Enabled = true;
-        }
-
-        public List<ProcessInfo> GetAllConfigureServices()
-        {
-            List<ProcessInfo> list = new List<ProcessInfo>();
-            var runningProcesses = Process.GetProcesses();
-            var cfgProcess = _servicesTable.GetServices();
-
-            foreach(var service in runningProcesses)
-            {
-                if(cfgProcess.Select(p => p.ServiceName).Contains(service.ProcessName.Split('.')[0]))
-                {                    
-                    list.Add(new ProcessInfo(service.ProcessName,service.Id, service.PagedMemorySize64));                    
-                }
-            }
-            return list;
-        }
-
-        private void MonitoreConfigureServices(object obj, ElapsedEventArgs e)
-        {
-            var runningProcesses = Process.GetProcesses();
-            foreach (var service in _servicesTable.GetServices())
-            {
-                if (runningProcesses.Select(p => p.ProcessName).Contains(service.ServiceName) && !service.IsStarted)
-                {
-                    service.IsStarted = true;
-                    ConfiguredServiceStarted?.Invoke(service);
-                }
-                if (service.IsStarted && !runningProcesses.Select(p => p.ProcessName).Contains(service.ServiceName))
-                {
-                    service.IsStarted = false;
-                    ConfiguredServiceStopped?.Invoke(service);
-                }
-            }
+            throw new NotImplementedException();
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace DelphiSupervisorV6
 {
-    public  class ProcessInfo
+    public class ProcessInfo
     {
         public string Name { get; set; }
         public int PID { get; set; }
@@ -18,6 +18,11 @@ namespace DelphiSupervisorV6
             Name = name;
             PID = pid;
             Memory = memory;
+        }
+
+        public override string ToString()
+        {
+            return $"Name - {Name} | PID - {PID} | Memeory - {Memory}";
         }
     }
 }
