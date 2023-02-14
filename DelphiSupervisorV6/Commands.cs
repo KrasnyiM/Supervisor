@@ -4,26 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Net.Http.Formatting;
 
 namespace DelphiSupervisorV6
 {
     public class Commands : ConsoleAppBase
     {
         private IView view;
-        private IProcessProvider processProvider;
         private IConfigWatcher configWatcher;
+        private ProcessProvider processProvider;
 
-        public Commands(IView view, IProcessProvider processProvider, IConfigWatcher configWatcher)
+        public Commands(IView view, IConfigWatcher configWatcher)
         {
             this.view = view;
-            this.processProvider = processProvider;
             this.configWatcher = configWatcher;
+            processProvider = new ProcessProvider();
         }
 
         [Command("GetAll","Method that shows all running configured services")]
         public void GetAll()
         {
-            configWatcher.AddConfigureServices();
             view.ShowAll(processProvider.GetAllConfigureServices());
         }
 
@@ -60,10 +60,12 @@ namespace DelphiSupervisorV6
         [Command("Watch", "Method that monitors configured services")]
         public void Watch()
         {
+            configWatcher.ServiceAdded += view.ShowNewConfig;
+            configWatcher.ServiceRemoved += view.ShowDeleteConfig;
             configWatcher.Init();
             processProvider.ConfiguredServiceStarted += Provider_ConfiguredServiceStarted;
             processProvider.ConfiguredServiceStopped += Provider_ConfiguredServiceStopped;
-            processProvider.StartTimer();
+            processProvider.StartTimer();           
         }
 
         private void Provider_ConfiguredServiceStopped(ConfiguredService service)
@@ -75,5 +77,6 @@ namespace DelphiSupervisorV6
         {
             view.ShowMonitoredServiceStarted(service);
         }
+
     }
 }
