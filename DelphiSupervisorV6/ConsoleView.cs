@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DelphiSupervisorV6
 {
-    internal class ConsoleView : IView
+    public class ConsoleView : IView
     {
         public void ShowAll(IEnumerable<ProcessInfo> processes)
         {

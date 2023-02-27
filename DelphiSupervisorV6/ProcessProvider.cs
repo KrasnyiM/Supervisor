@@ -1,109 +1,97 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Threading;
-using System.Timers;
+using System.Xml.Linq;
 
 namespace DelphiSupervisorV6
-{
-    public class ProcessProvider : IProcessProvider
+{   
+    public class ProcessProvider
     {
-        private IServicesTable _servicesTable;
-        private static System.Timers.Timer _timer;
+        delegate void WebSocketMessageRecieved(string message);
+        event WebSocketMessageRecieved messageReceived;
 
-        public event ConfiguredServiceHandle ConfiguredServiceStarted;
-        public event ConfiguredServiceHandle ConfiguredServiceStopped;
+        private HttpClient client;
 
-        public ProcessProvider(IServicesTable servicesTable)
+        public ProcessProvider()
         {
-            _servicesTable = servicesTable;
-        }       
-
-        public List<ProcessInfo> GetAllProcesses()
-        {
-            List<ProcessInfo> list = new List<ProcessInfo>();
-            foreach(Process process in Process.GetProcesses())
-            {
-                list.Add(new ProcessInfo(process.ProcessName, process.Id, process.PagedMemorySize64));
-            }
-            return list;
-        }
-
-        public ProcessInfo GetByID(int processId)
-        {
-            var process = Process.GetProcessById(processId);
-            ProcessInfo processInfo = new ProcessInfo(process.ProcessName, process.Id, process.PagedMemorySize64);
-            return processInfo;
-        }
-
-        public List<ProcessInfo> GetProcessByName(string processesName)
-        {
-            List<ProcessInfo> list = new List<ProcessInfo>();
-            foreach(Process process in Process.GetProcessesByName(processesName))
-            {
-                list.Add(new ProcessInfo(process.ProcessName, process.Id, process.PagedMemorySize64));
-            }
-            return list;
-        }
-
-        public ProcessInfo KillProcces(int processesId)
-        {
-            var processById = Process.GetProcessById(processesId);
-            ProcessInfo process = new ProcessInfo(processById.ProcessName, processById.Id, processById.PagedMemorySize64);
-            processById.Kill();
-            return process;
-        }
-
-        public ProcessInfo StartProcces(string path)
-        {
-            var process = Process.Start(path);
-            ProcessInfo processInfo = new ProcessInfo(process.ProcessName, process.Id, process.PagedMemorySize64);
-            return processInfo;
-        }
-
-        public void StartTimer()
-        {
-            _timer = new System.Timers.Timer(250);
-            _timer.Elapsed += MonitoreConfigureServices;
-            _timer.AutoReset = true;
-            _timer.Enabled = true;
+            client = new HttpClient();
         }
 
         public List<ProcessInfo> GetAllConfigureServices()
         {
-            List<ProcessInfo> list = new List<ProcessInfo>();
-            var runningProcesses = Process.GetProcesses();
-            var cfgProcess = _servicesTable.GetServices();
-
-            foreach(var service in runningProcesses)
+            List<ProcessInfo> processInfo = null;
+            HttpResponseMessage httpResponseMessage = client.GetAsync(@"https://localhost:7131/api/processes/processConfigured").Result;
+            if (httpResponseMessage.IsSuccessStatusCode)
             {
-                if(cfgProcess.Select(p => p.ServiceName).Contains(service.ProcessName.Split('.')[0]))
-                {                    
-                    list.Add(new ProcessInfo(service.ProcessName,service.Id, service.PagedMemorySize64));                    
-                }
+                return processInfo = httpResponseMessage.Content.ReadAsAsync<List<ProcessInfo>>().Result;
             }
-            return list;
+            return processInfo;
         }
 
-        private void MonitoreConfigureServices(object obj, ElapsedEventArgs e)
+        public List<ProcessInfo> GetAllProcesses()
         {
-            var runningProcesses = Process.GetProcesses();
-            foreach (var service in _servicesTable.GetServices())
+            List<ProcessInfo> processInfo = null;
+            HttpResponseMessage httpResponseMessage = client.GetAsync(@"https://localhost:7131/api/processes").Result;
+            if (httpResponseMessage.IsSuccessStatusCode)
             {
-                if (runningProcesses.Select(p => p.ProcessName).Contains(service.ServiceName) && !service.IsStarted)
-                {
-                    service.IsStarted = true;
-                    ConfiguredServiceStarted?.Invoke(service);
-                }
-                if (service.IsStarted && !runningProcesses.Select(p => p.ProcessName).Contains(service.ServiceName))
-                {
-                    service.IsStarted = false;
-                    ConfiguredServiceStopped?.Invoke(service);
-                }
+                return processInfo = httpResponseMessage.Content.ReadAsAsync<List<ProcessInfo>>().Result;
             }
+            return processInfo;
         }
+
+        public ProcessInfo GetByID(int pid)
+        {
+            ProcessInfo processInfo = null;
+            HttpResponseMessage httpResponseMessage = client.GetAsync($"https://localhost:7131/api/processes/processId?id={pid}").Result;
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                return processInfo = httpResponseMessage.Content.ReadAsAsync<ProcessInfo>().Result;
+            }
+            return processInfo;
+        }
+
+        public List<ProcessInfo> GetProcessByName(string name)
+        {
+            List<ProcessInfo> processInfo = null;
+            HttpResponseMessage httpResponseMessage = client.GetAsync($"https://localhost:7131/api/processes/processName?Name={name}").Result;
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                return processInfo = httpResponseMessage.Content.ReadAsAsync<List<ProcessInfo>>().Result;
+            }
+            return processInfo;
+        }
+
+        public ProcessInfo StartProcces(string path)
+        {
+            ProcessInfo processInfo = null;
+            HttpResponseMessage httpResponseMessage = client.PostAsJsonAsync($"https://localhost:7131/api/processes/command/executeCommand?Path={path}&CommandType=0",path).Result;
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                return processInfo = httpResponseMessage.Content.ReadAsAsync<ProcessInfo>().Result;
+            }
+            return processInfo;
+        }
+
+        public ProcessInfo KillProcces(int id)
+        {
+            ProcessInfo processInfo = null;
+            HttpResponseMessage httpResponseMessage = client.PostAsJsonAsync($"https://localhost:7131/api/processes/command/executeCommand?ProcessId={id}&CommandType=1", id).Result;
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                return processInfo = httpResponseMessage.Content.ReadAsAsync<ProcessInfo>().Result;
+            }
+            return processInfo;
+        }
+
+        public void Watch()
+        {
+            HttpResponseMessage httpResponseMessage = client.GetAsync("https://localhost:7131/api/processes/watch?webSocketCommandType=0").Result;
+            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        }
+
     }
 }

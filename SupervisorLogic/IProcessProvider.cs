@@ -57,5 +57,6 @@ namespace DelphiSupervisorV6
         /// <returns></returns>
         public List<ProcessInfo> GetAllConfigureServices();
 
+        public void StopTimer();
     }
 }

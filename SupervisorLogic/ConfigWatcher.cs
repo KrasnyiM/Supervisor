@@ -21,13 +21,13 @@ namespace DelphiSupervisorV6
         {
             watcher = new FileSystemWatcher()
             {
-                Path = "D:\\DelphiSupervisor\\Service",
+                Path = "D:\\DelphiSupervisor_Test_Test\\Service",
                 Filter = "*.xml",
                 EnableRaisingEvents = true,
             };
             xmlSerializer = new XmlSerializer(typeof(ConfiguredService));
         }
-
+        
         public void Watch()
         {
             watcher.Created += OnCreated;
@@ -36,20 +36,20 @@ namespace DelphiSupervisorV6
 
         public void Init()
         {
-            var files = Directory.GetFiles("D:\\DelphiSupervisor\\Service", "*.xml");
+            var files = Directory.GetFiles("D:\\DelphiSupervisor_Test_Test\\Service", "*.xml");
             foreach (var file in files)
             {
                 using (var reader = XmlReader.Create(file))
                 {
                     ConfiguredService service = (ConfiguredService)xmlSerializer.Deserialize(reader);
-                    ServiceAdded?.Invoke(service);
+                    OnServiceAdded(service);
                 }
             }
         }
 
         public void AddConfigureServices()
         {
-            var files = Directory.GetFiles("D:\\DelphiSupervisor\\Service", "*.xml");
+            var files = Directory.GetFiles("D:\\DelphiSupervisor_Test_Test\\Service", "*.xml");
             foreach (var file in files)
             {
                 using (var reader = XmlReader.Create(file))
