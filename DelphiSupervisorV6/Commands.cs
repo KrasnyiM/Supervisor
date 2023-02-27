@@ -60,12 +60,7 @@ namespace DelphiSupervisorV6
         [Command("Watch", "Method that monitors configured services")]
         public void Watch()
         {
-            configWatcher.ServiceAdded += view.ShowNewConfig;
-            configWatcher.ServiceRemoved += view.ShowDeleteConfig;
-            configWatcher.Init();
-            processProvider.ConfiguredServiceStarted += Provider_ConfiguredServiceStarted;
-            processProvider.ConfiguredServiceStopped += Provider_ConfiguredServiceStopped;
-            processProvider.StartTimer();           
+          
         }
 
         private void Provider_ConfiguredServiceStopped(ConfiguredService service)

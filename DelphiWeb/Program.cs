@@ -1,4 +1,5 @@
 using DelphiSupervisorV6;
+using DelphiWeb;
 using SupervisorLogic;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IConfigWatcher, ConfigWatcher>();
 builder.Services.AddSingleton<IProcessProvider, SdkProcessProvider>();
 builder.Services.AddSingleton<IServicesTable, ConfiguredServicesTable>();
-builder.Services.AddSingleton<IView, ConsoleView>();
+builder.Services.AddSingleton<WebSocketMessageUtils>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
@@ -32,5 +33,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseWebSockets();
 
 app.Run();

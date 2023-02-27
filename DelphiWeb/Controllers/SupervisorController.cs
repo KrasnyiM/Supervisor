@@ -3,6 +3,9 @@ using DelphiSupervisorV6;
 using System.IO;
 using AutoMapper;
 using SupervisorLogic;
+using System.Diagnostics;
+using System.Net.WebSockets;
+using System.Net.Sockets;
 
 namespace DelphiWeb.Controllers
 {
@@ -11,14 +14,16 @@ namespace DelphiWeb.Controllers
     {
         private IConfigWatcher _configWatcher;
         private IProcessProvider _processProvider;
-
+        private WebSocketMessageUtils _webSocketMessageUtils;
         private readonly IMapper _mapper;
 
-        public SupervisorController(IConfigWatcher configWatcher, IProcessProvider processProvider, IMapper mapper)
+        public SupervisorController(IConfigWatcher configWatcher, IProcessProvider processProvider, IMapper mapper,
+            WebSocketMessageUtils webSocketMessageUtils)
         {
             _configWatcher = configWatcher;
             _processProvider = processProvider;
             _mapper = mapper;
+            _webSocketMessageUtils = webSocketMessageUtils;
         }
 
         [HttpGet("processes")]
@@ -102,6 +107,39 @@ namespace DelphiWeb.Controllers
             }
 
             return Ok(process.Select(process => _mapper.Map<ProcessInfoDto>(process)));
+        }
+
+        [HttpGet("processes/watch")]
+        public IActionResult Watch(WatchCommand webSocketCommandType)
+        {
+            WebSocket webSocket = null;
+            if (webSocketCommandType == WatchCommand.Start)
+            {
+                webSocket = HttpContext.WebSockets.AcceptWebSocketAsync().Result;
+
+                _configWatcher.ServiceAdded += (configuredService)
+                    => _webSocketMessageUtils.SendServiceAddedMessage(configuredService, webSocket);
+
+                _configWatcher.ServiceRemoved += (configuredService)
+                    => _webSocketMessageUtils.SendServiceDeletedMessage(configuredService, webSocket);
+
+                _configWatcher.Init();
+
+                _processProvider.ConfiguredServiceStarted += (configuredService)
+                    => _webSocketMessageUtils.SendServiceStartedMessage(configuredService, webSocket);
+
+                _processProvider.ConfiguredServiceStopped += (configuredService)
+                    => _webSocketMessageUtils.SendServiceStopedMessage(configuredService, webSocket);
+                _processProvider.StartTimer();
+            }
+            if (webSocketCommandType == WatchCommand.Stop)
+            {
+                _processProvider.StopTimer();               
+            }
+            
+
+
+            return Ok();
         }
     }
 }

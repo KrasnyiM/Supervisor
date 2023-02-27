@@ -72,6 +72,11 @@ namespace DelphiSupervisorV6
             _timer.Enabled = true;
         }
 
+        public void StopTimer()
+        {
+            _timer.Stop();
+        }
+
         public List<ProcessInfo> GetAllConfigureServices()
         {
             List<ProcessInfo> list = new List<ProcessInfo>();

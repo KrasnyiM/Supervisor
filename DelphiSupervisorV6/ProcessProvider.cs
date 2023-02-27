@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace DelphiSupervisorV6
-{
-    public class ProcessProvider : IProcessProvider
+{   
+    public class ProcessProvider
     {
-        private HttpClient client;
+        delegate void WebSocketMessageRecieved(string message);
+        event WebSocketMessageRecieved messageReceived;
 
-        public event ConfiguredServiceHandle ConfiguredServiceStarted;
-        public event ConfiguredServiceHandle ConfiguredServiceStopped;
+        private HttpClient client;
 
         public ProcessProvider()
         {
@@ -85,9 +87,11 @@ namespace DelphiSupervisorV6
             return processInfo;
         }
 
-        public void StartTimer()
+        public void Watch()
         {
-            throw new NotImplementedException();
+            HttpResponseMessage httpResponseMessage = client.GetAsync("https://localhost:7131/api/processes/watch?webSocketCommandType=0").Result;
+            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
+
     }
 }
